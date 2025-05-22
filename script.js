@@ -1,8 +1,107 @@
+// Import PGlite correctly
+import { PGlite } from 'https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js';
+
+// --- Database Service (Pglite Integration) ---
+class PatientDbService {
+    constructor() {
+        this.db = null;
+        this.initializeDb(); // Start database initialization immediately
+    }
+
+    async initializeDb() {
+        try {
+            if (this.db) return; // Prevent re-initialization
+
+            const loadingStatusDiv = document.getElementById('loadingStatus');
+            if (loadingStatusDiv) {
+                loadingStatusDiv.textContent = 'Connecting to database...';
+            }
+
+            // Initialize PGlite database with the correct constructor
+            this.db = new PGlite('idb://patient_portal_db', { relaxedDurability: true });
+            await this.db.waitReady; // Wait for database to be ready
+
+            // Create patients table if it doesn't exist
+            await this.db.query(`
+                CREATE TABLE IF NOT EXISTS patients (
+                    id TEXT PRIMARY KEY,
+                    fullName TEXT NOT NULL,
+                    dateOfBirth TEXT NOT NULL,
+                    contactNumber TEXT,
+                    address TEXT,
+                    gender TEXT NOT NULL,
+                    registeredAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+            console.log('Pglite: Patients table ensured to exist and DB initialized successfully.');
+
+            // Remove loading status and load initial content once DB is ready
+            if (loadingStatusDiv) {
+                loadingStatusDiv.remove();
+            }
+            loadContent(window.location.hash.substring(1) || 'register');
+
+        } catch (error) {
+            console.error('Pglite: Error initializing database:', error);
+            const loadingStatusDiv = document.getElementById('loadingStatus');
+            if (loadingStatusDiv) {
+                loadingStatusDiv.textContent = `Error loading database: ${error.message}. Check console for details.`;
+            }
+            alert('Failed to initialize database. Check console for details.');
+        }
+    }
+
+    async registerPatient(patientData) {
+        if (!this.db) {
+            // Attempt to re-initialize if DB somehow became unavailable
+            await this.initializeDb();
+            if (!this.db) {
+                 throw new Error('Database is still not initialized after retry.');
+            }
+        }
+        const { id, fullName, dateOfBirth, contactNumber, address, gender } = patientData;
+        try {
+            const sql = `
+                INSERT INTO patients (id, fullName, dateOfBirth, contactNumber, address, gender)
+                VALUES ($1, $2, $3, $4, $5, $6);
+            `;
+            const result = await this.db.query(sql, [id, fullName, dateOfBirth, contactNumber, address, gender]);
+            console.log('Patient registered successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error registering patient:', patientData, error);
+            throw error;
+        }
+    }
+
+    async getAllPatients() {
+        if (!this.db) {
+            await this.initializeDb();
+            if (!this.db) {
+                 throw new Error('Database is still not initialized after retry.');
+            }
+        }
+        try {
+            const result = await this.db.query('SELECT * FROM patients ORDER BY registeredAt DESC;');
+            return result.rows;
+        } catch (error) {
+            console.error('Error fetching all patients:', error);
+            throw error;
+        }
+    }
+}
+
+// Instantiate the database service
+const patientDbService = new PatientDbService();
+
+
+// --- Routing Logic ---
 const contentArea = document.querySelector('.content-area');
 const navLinks = document.querySelectorAll('.nav-link');
 
 function loadContent(route) {
     let contentHtml = '';
+    // Remove 'active' class from all nav links
     navLinks.forEach(link => link.classList.remove('active'));
 
     switch (route) {
@@ -51,6 +150,7 @@ function loadContent(route) {
                 </div>
             `;
             document.querySelector('[data-route="register"]').classList.add('active');
+            attachFormListeners();
             break;
         case 'query':
             contentHtml = `
@@ -66,37 +166,69 @@ function loadContent(route) {
             contentHtml = `
                 <div class="about-container p-4 bg-bg-medium rounded-lg shadow-md">
                     <h2 class="text-text-white text-2xl font-semibold mb-4 text-center">About PatientPortal</h2>
-                    <p class="text-text-white text-lg">This is a demo application for patient data management using Pglite (to be integrated).</p>
+                    <p class="text-text-white text-lg">This is a demo application for patient data management using Pglite.</p>
                     <p class="text-gray-400 mt-2">Developed as per the requirements for Medblocks.</p>
                 </div>
             `;
             document.querySelector('[data-route="about"]').classList.add('active');
             break;
         default:
+            // Default to register if hash is empty or unrecognized
             window.location.hash = '#register';
             return;
     }
     contentArea.innerHTML = contentHtml;
 }
 
+// Helper to generate a unique ID for patients
+function generateUniqueId() {
+    return 'patient_' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
+// Function to attach event listeners to the registration form
+function attachFormListeners() {
+    const registrationForm = document.getElementById('registrationForm');
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(registrationForm);
+            const patientData = {
+                id: generateUniqueId(),
+                fullName: formData.get('fullName'),
+                dateOfBirth: formData.get('dateOfBirth'),
+                contactNumber: formData.get('contactNumber'),
+                address: formData.get('address'),
+                gender: formData.get('gender')
+            };
+
+            try {
+                await patientDbService.registerPatient(patientData);
+                alert('Patient registered successfully!');
+                registrationForm.reset(); // Clear the form
+            } catch (error) {
+                alert('Failed to register patient. Check console for details.');
+            }
+        });
+    }
+}
+
+// Event listener for URL hash changes (for routing)
 window.addEventListener('hashchange', () => {
-    const route = window.location.hash.substring(1);
+    const route = window.location.hash.substring(1); // Get route from hash (e.g., 'register' from '#register')
     loadContent(route);
 });
 
+// Event listeners for navigation links
 navLinks.forEach(link => {
     link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const route = event.target.dataset.route;
-        window.location.hash = `#${route}`;
+        event.preventDefault(); // Prevent default link behavior
+        const route = event.target.dataset.route; // Get route from data-route attribute
+        window.location.hash = `#${route}`; // Update URL hash, triggering hashchange event
     });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash === '') {
-        window.location.hash = '#register';
-    } else {
-        const route = window.location.hash.substring(1);
-        loadContent(route);
-    }
+// Initial load
+window.addEventListener('DOMContentLoaded', () => {
+    loadContent(window.location.hash.substring(1) || 'register');
 });

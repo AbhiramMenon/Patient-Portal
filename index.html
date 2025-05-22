@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PatientPortal</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-bg-dark text-text-white flex justify-center items-start min-h-screen font-sans">
     <div class="app-container flex flex-col w-full max-w-6xl shadow-2xl min-h-[95vh] my-5 rounded-lg overflow-hidden bg-bg-dark">
@@ -24,8 +24,12 @@
             </nav>
 
             <main class="content-area flex-grow p-5 bg-bg-dark box-border">
+                <div id="loadingStatus" class="text-center text-gray-400 text-xl py-8">Loading database...</div>
             </main>
         </div>
     </div>
+
+    <script type="module" src="script.js"></script>
+
 </body>
 </html>
