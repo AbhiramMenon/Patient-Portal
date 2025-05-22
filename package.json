@@ -1,0 +1,24 @@
+{
+  "name": "patient-portal",
+  "version": "1.0.0",
+  "description": "Patient Portal Application using Vanilla JS and Tailwind CSS for client-side patient data management with Pglite.",
+  "main": "script.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./style.css -o ./style.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbhiramMenon/Patient-Portal.git"
+  },
+  "keywords": ["patient", "portal", "vanilla-js", "tailwindcss", "pglite", "healthcare", "database"],
+  "author": "Abhiram Menon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AbhiramMenon/Patient-Portal/issues"
+  },
+  "homepage": "https://github.com/AbhiramMenon/Patient-Portal#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.x.x" 
+  }
+}
