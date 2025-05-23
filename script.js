@@ -1,4 +1,4 @@
-// Import PGlite correctly
+
 import { PGlite } from 'https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js';
 
 // --- Global BroadcastChannel for inter-tab communication ---
@@ -175,49 +175,61 @@ function loadContent(route) {
     switch (route) {
         case 'register':
             // HTML for the patient registration form
-            contentHtml = `
-                <div class="registration-container p-8 bg-gray-800 rounded-xl shadow-2xl max-w-2xl mx-auto border border-gray-700">
-                    <h2 class="text-text-white text-3xl font-extrabold mb-8 text-center tracking-wide">Register New Patient</h2>
-                    <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-                        <div>
-                            <label for="fullName" class="block text-gray-200 text-base font-semibold mb-2">Full Name</label>
-                            <input type="text" id="fullName" name="fullName" required
-                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent transition-all duration-200 ease-in-out">
-                        </div>
-                        <div>
-                            <label for="dateOfBirth" class="block text-gray-200 text-base font-semibold mb-2">Date of Birth</label>
-                            <input type="date" id="dateOfBirth" name="dateOfBirth" required
-                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent transition-all duration-200 ease-in-out">
-                        </div>
-                        <div>
-                            <label for="contactNumber" class="block text-gray-200 text-base font-semibold mb-2">Contact Number</label>
-                            <input type="tel" id="contactNumber" name="contactNumber"
-                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent transition-all duration-200 ease-in-out">
-                        </div>
-                        <div>
-                            <label for="gender" class="block text-gray-200 text-base font-semibold mb-2">Gender</label>
-                            <select id="gender" name="gender" required
-                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent appearance-none leading-tight transition-all duration-200 ease-in-out">
-                                <option value="" class="bg-gray-700 text-gray-400">Select Gender</option>
-                                <option value="male" class="bg-gray-700">Male</option>
-                                <option value="female" class="bg-gray-700">Female</option>
-                                <option value="other" class="bg-gray-700">Other</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="address" class="block text-gray-200 text-base font-semibold mb-2">Address</label>
-                            <textarea id="address" name="address" rows="3"
-                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent resize-y transition-all duration-200 ease-in-out"></textarea>
-                        </div>
-                        <div class="md:col-span-2 flex justify-end mt-6">
-                            <button type="submit"
-                                class="bg-accent-blue text-white py-3 px-8 rounded-full hover:bg-accent-dark-blue transition-all duration-300 ease-in-out font-bold text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-75">
-                                Register Patient
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            `;
+contentHtml = `
+  <div class="registration-container bg-card-bg p-8 rounded-xl shadow-lg border border-border-default max-w-3xl w-full mx-auto">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-text-light mb-2">Register New Patient</h2>
+      <div class="w-24 h-1 bg-accent-blue mx-auto rounded-full opacity-80"></div>
+    </div>
+
+    <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="fullName" class="block text-text-light font-medium mb-2">Full Name</label>
+        <input type="text" id="fullName" name="fullName" required
+          class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="dateOfBirth" class="block text-text-light font-medium mb-2">Date of Birth</label>
+        <input type="date" id="dateOfBirth" name="dateOfBirth" required
+          class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="contactNumber" class="block text-text-light font-medium mb-2">Contact Number</label>
+        <input type="tel" id="contactNumber" name="contactNumber"
+          class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="gender" class="block text-text-light font-medium mb-2">Gender</label>
+        <select id="gender" name="gender" required
+          class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all duration-200 appearance-none">
+          <option value="" class="bg-card-bg text-text-placeholder">Select Gender</option>
+          <option value="male" class="bg-card-bg text-black">Male</option>
+          <option value="female" class="bg-card-bg text-black">Female</option>
+          <option value="other" class="bg-card-bg text-black">Other</option>
+        </select>
+      </div>
+
+      <div class="md:col-span-2">
+        <label for="address" class="block text-text-light font-medium mb-2">Address</label>
+        <textarea id="address" name="address" rows="3"
+          class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent resize-y transition-all duration-200"></textarea>
+      </div>
+
+      <div class="md:col-span-2 flex justify-end mt-2">
+        <button type="submit"
+          class="bg-accent-blue hover:bg-accent-dark-blue text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-75 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Register Patient
+        </button>
+      </div>
+    </form>
+  </div>
+`;
             document.querySelector('[data-route="register"]').classList.add('active');
             contentArea.innerHTML = contentHtml;
             attachFormListeners(); // Attach event listeners to the newly rendered form
@@ -225,51 +237,78 @@ function loadContent(route) {
 
         case 'query':
             // HTML for displaying patient records and raw SQL query interface
-            contentHtml = `
-                <div class="query-container p-4 bg-bg-medium rounded-lg shadow-md max-w-4xl mx-auto">
-                    <h2 class="text-text-white text-2xl font-semibold mb-6 text-center">Patient Records & Raw Query</h2>
+           contentHtml = `
+    <div class="query-container p-6 bg-card-bg rounded-xl shadow-lg border border-border-default max-w-4xl mx-auto">
+        <h2 class="text-text-light text-2xl font-bold mb-8 text-center">Patient Records & Raw Query</h2>
 
-                    <h3 class="text-text-white text-xl font-semibold mb-4 mt-6">Registered Patients</h3>
-                    <div class="mb-4">
-                        <input type="text" id="searchInput" placeholder="Search patients..."
-                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent">
+        <div class="space-y-6">
+            <!-- Registered Patients Section -->
+            <div class="space-y-4">
+                <h3 class="text-text-light text-xl font-semibold">Registered Patients</h3>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search patients..."
+                        class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent transition-all duration-200">
+                    <div class="absolute right-3 top-3 text-text-placeholder">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
                     </div>
-                    <div id="patientsTableContainer" class="overflow-x-auto mb-8">
-                        <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
-                            <thead class="bg-gray-700 text-gray-300 uppercase text-sm leading-normal">
-                                <tr>
-                                    <th class="py-3 px-6 text-left">Full Name</th>
-                                    <th class="py-3 px-6 text-left">Date of Birth</th>
-                                    <th class="py-3 px-6 text-left">Gender</th>
-                                    <th class="py-3 px-6 text-left">Contact</th>
-                                    <th class="py-3 px-6 text-left">Address</th>
-                                    <th class="py-3 px-6 text-left">Registered</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-gray-200 text-sm font-light" id="patientsTableBody">
-                                <tr><td colspan="6" class="py-4 text-center text-gray-400">Loading patients...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="noPatientsMessage" class="hidden text-center text-gray-400 text-lg py-8">No patients registered yet.</div>
+                </div>
 
-                    <h3 class="text-text-white text-xl font-semibold mb-4 mt-8">Execute Raw SQL</h3>
-                    <div class="mb-4">
-                        <textarea id="sqlQueryInput" rows="5" placeholder="Enter SQL query here (e.g., SELECT * FROM patients;)"
-                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent font-mono text-sm"></textarea>
-                    </div>
-                    <div class="flex justify-end mb-4">
+                <div id="patientsTableContainer" class="overflow-x-auto">
+                    <table class="min-w-full bg-card-bg rounded-lg overflow-hidden border border-border-default">
+                        <thead class="bg-table-header-bg">
+                            <tr class="text-left text-text-light text-sm font-medium">
+                                <th class="py-3 px-6 border-b border-border-default">Full Name</th>
+                                <th class="py-3 px-6 border-b border-border-default">Date of Birth</th>
+                                <th class="py-3 px-6 border-b border-border-default">Gender</th>
+                                <th class="py-3 px-6 border-b border-border-default">Contact</th>
+                                <th class="py-3 px-6 border-b border-border-default">Address</th>
+                                <th class="py-3 px-6 border-b border-border-default">Registered</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-text-light text-sm" id="patientsTableBody">
+                            <tr>
+                                <td colspan="6" class="py-4 text-center text-text-placeholder">Loading patients...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noPatientsMessage" class="hidden text-center text-text-placeholder text-lg py-8">No patients registered yet.</div>
+            </div>
+
+            <!-- Raw SQL Section -->
+            <div class="space-y-4">
+                <h3 class="text-text-light text-xl font-semibold">Execute Raw SQL</h3>
+                <div class="space-y-4">
+                    <textarea id="sqlQueryInput" rows="5" placeholder="Enter SQL query here (e.g., SELECT * FROM patients;)"
+                        class="w-full px-4 py-3 bg-card-bg border border-white rounded-lg text-black placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent font-mono text-sm transition-all duration-200"></textarea>
+
+                    <div class="flex justify-end">
                         <button id="executeSqlQueryBtn"
-                            class="bg-accent-blue text-white py-2 px-6 rounded-full hover:bg-accent-dark-blue transition-all duration-300 ease-in-out font-bold text-base shadow-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-75">
+                            class="bg-accent-blue text-white py-2 px-6 rounded-lg hover:bg-accent-dark-blue transition-all duration-200 ease-in-out font-medium text-base focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-75 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path>
+                            </svg>
                             Execute Query
                         </button>
                     </div>
-                    <div id="sqlQueryResult" class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
-                        <pre class="text-gray-200 whitespace-pre-wrap" id="sqlQueryResultPre">Query results will appear here.</pre>
-                    </div>
-                    <div id="sqlQueryError" class="hidden text-red-400 text-sm mt-2"></div>
                 </div>
-            `;
+
+                <div id="sqlQueryResult" class="bg-card-bg p-4 rounded-lg border border-border-default overflow-x-auto">
+                    <pre class="text-text-light whitespace-pre-wrap font-mono text-sm" id="sqlQueryResultPre">Query results will appear here.</pre>
+                </div>
+                <div id="sqlQueryError" class="hidden text-error-red text-sm mt-2 flex items-start gap-2">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="sqlErrorText"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
             document.querySelector('[data-route="query"]').classList.add('active');
             contentArea.innerHTML = contentHtml;
             renderPatientsList(); // Initial render of the patient list
@@ -280,12 +319,102 @@ function loadContent(route) {
         case 'about':
             // HTML for the About page
             contentHtml = `
-                <div class="about-container p-4 bg-bg-medium rounded-lg shadow-md">
-                    <h2 class="text-text-white text-2xl font-semibold mb-4 text-center">About PatientPortal</h2>
-                    <p class="text-text-white text-lg">This is a demo application for patient data management using Pglite.</p>
-                    <p class="text-gray-400 mt-2">Developed as per the requirements for Medblocks.</p>
+    <div class="p-8 bg-card-bg rounded-xl shadow-lg border border-border-default max-w-2xl mx-auto transition-all duration-300 hover:shadow-xl">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-text-light mb-3">About Patient Portal</h2>
+            <div class="w-24 h-1 bg-accent-blue mx-auto rounded-full opacity-80"></div>
+        </div>
+
+        <div class="space-y-6 text-text-light">
+            <p class="text-lg leading-relaxed text-center">
+                A <span class="text-accent-blue font-medium">modern</span> application for efficient patient data management in a secure local environment.
+            </p>
+
+            <div class="bg-card-bg p-6 rounded-lg border border-border-default">
+                <h3 class="text-xl font-semibold mb-4 flex items-center gap-3 text-accent-blue">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+                    </svg>
+                    Key Features
+                </h3>
+                
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-table-row-hover transition-colors">
+                        <div class="bg-accent-blue/10 p-2 rounded-full flex-shrink-0">
+                            <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Real-time Patient Registration</h4>
+                            <p class="text-sm text-text-placeholder mt-1">Quickly add new patient profiles with all necessary details</p>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-table-row-hover transition-colors">
+                        <div class="bg-accent-blue/10 p-2 rounded-full flex-shrink-0">
+                            <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Patient Records Query</h4>
+                            <p class="text-sm text-text-placeholder mt-1">Easily search and view existing patient data</p>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-table-row-hover transition-colors">
+                        <div class="bg-accent-blue/10 p-2 rounded-full flex-shrink-0">
+                            <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Inter-tab Synchronization</h4>
+                            <p class="text-sm text-text-placeholder mt-1">All data updates sync automatically across open tabs</p>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-table-row-hover transition-colors">
+                        <div class="bg-accent-blue/10 p-2 rounded-full flex-shrink-0">
+                            <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Persistent Local Database</h4>
+                            <p class="text-sm text-text-placeholder mt-1">Data remains available even after closing the browser</p>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-table-row-hover transition-colors">
+                        <div class="bg-accent-blue/10 p-2 rounded-full flex-shrink-0">
+                            <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Raw SQL Query Interface</h4>
+                            <p class="text-sm text-text-placeholder mt-1">Run direct SQL commands for advanced operations</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center mt-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-accent-blue/10 rounded-full border border-accent-blue/20">
+                    <svg class="w-4 h-4 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-sm text-text-light">Secure • Private • Reliable</span>
                 </div>
-            `;
+                <p class="text-text-placeholder text-sm mt-4">
+                    Designed for healthcare professionals who value efficiency and data integrity
+                </p>
+            </div>
+        </div>
+    </div>
+`;
             document.querySelector('[data-route="about"]').classList.add('active');
             contentArea.innerHTML = contentHtml;
             break;
@@ -351,9 +480,20 @@ async function renderPatientsList(searchTerm = '') {
                     <td class="py-3 px-6 text-left">${patient.gender || 'N/A'}</td>
                     <td class="py-3 px-6 text-left">${patient.contactNumber || 'N/A'}</td>
                     <td class="py-3 px-6 text-left">${patient.address || 'N/A'}</td>
-                    <td class="py-3 px-6 text-left">${
-                        patient.registeredAt ? new Date(patient.registeredAt).toLocaleString() : 'N/A'
-                    }</td>
+                   <td class="py-3 px-6 text-left whitespace-nowrap">${
+    patient.registeredAt
+        ? new Date(patient.registeredAt).toLocaleString(undefined, { // Using 'undefined' lets browser determine locale
+              year: 'numeric',
+              month: '2-digit', // Changed to 2-digit for consistency if needed
+              day: '2-digit',   // Changed to 2-digit for consistency if needed
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hourCycle: 'h23', // Ensure 24-hour format
+              
+          })
+        : 'N/A'
+}</td>
                 `;
                 patientsTableBody.appendChild(row);
             });

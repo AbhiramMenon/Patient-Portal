@@ -1,35 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PatientPortal</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PatientPortal</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-bg-dark text-text-white flex justify-center items-start min-h-screen font-sans">
-    <div class="app-container flex flex-col w-full max-w-6xl shadow-2xl min-h-[95vh] my-5 rounded-lg overflow-hidden bg-bg-dark">
-        <header class="header bg-bg-medium text-text-white p-5 flex justify-between items-center border-b border-bg-light text-xl font-bold">
-            <div class="logo">PatientPortal</div>
-            <div class="user-info text-base font-normal text-white/80">Welcome, Admin</div>
-        </header>
+<body class="bg-[#1e1e2f] text-white font-sans min-h-screen m-0">
 
-        <div class="main-content flex flex-grow">
-            <nav class="sidebar bg-bg-medium w-60 p-5 border-r border-bg-light box-border">
-                <ul>
-                    <li><a href="#register" class="nav-link block text-text-white py-3 px-4 rounded-md transition-colors duration-300 hover:bg-accent-dark-blue hover:text-text-white" data-route="register">Register Patient</a></li>
-                    <li><a href="#query" class="nav-link block text-text-white py-3 px-4 rounded-md transition-colors duration-300 hover:bg-accent-dark-blue hover:text-text-white" data-route="query">Query Patient</a></li>
-                    <li><a href="#about" class="nav-link block text-text-white py-3 px-4 rounded-md transition-colors duration-300 hover:bg-accent-dark-blue hover:text-text-white" data-route="about">About</a></li>
-                </ul>
-            </nav>
+  <div class="flex flex-col min-h-screen">
 
-            <main class="content-area flex-grow p-5 bg-bg-dark box-border">
-                <div id="loadingStatus" class="text-center text-gray-400 text-xl py-8">Loading database...</div>
-            </main>
-        </div>
+  
+    <header class="bg-[#11111b] text-white p-5 flex justify-between items-center text-xl font-bold border-b border-[#2c2c3c] w-full">
+      <div class="logo">Patient Portal</div>
+      <div class="user-info text-base font-normal text-white/80">Welcome</div>
+    </header>
+
+    <!-- Main layout: Sidebar + Main Content -->
+    <div class="flex flex-grow min-h-0">
+
+      <!-- Sidebar -->
+      <nav class="bg-[#151521] w-60 p-5 border-r border-[#2c2c3c] flex flex-col space-y-3">
+        <a href="#register" class="nav-link block py-3 px-4 rounded-lg hover:bg-blue-900 transition" data-route="register">Register</a>
+        <a href="#query" class="nav-link block py-3 px-4 rounded-lg hover:bg-blue-900 transition" data-route="query">Query</a>
+        <a href="#about" class="nav-link block py-3 px-4 rounded-lg hover:bg-blue-900 transition" data-route="about">About</a>
+      </nav>
+
+      <!-- Important: This matches what your JS expects -->
+      <main class="content-area flex-grow p-5 bg-[#1e1e2f] box-border">
+        <div id="loadingStatus" class="text-center text-gray-400 text-xl py-8">Loading database...</div>
+      </main>
     </div>
+  </div>
 
-    <script type="module" src="script.js"></script>
-
+  <script type="module" src="script.js" defer></script>
 </body>
 </html>
