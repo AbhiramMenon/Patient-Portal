@@ -1,9 +1,11 @@
+// Import PGlite correctly
 import { PGlite } from 'https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js';
 
+// --- Database Service (Pglite Integration) ---
 class PatientDbService {
     constructor() {
         this.db = null;
-        this.initializeDb();
+        this.initializeDb(); // Start database initialization immediately
     }
 
     async initializeDb() {
@@ -20,6 +22,8 @@ class PatientDbService {
         try {
             this.db = new PGlite('idb://patient_portal_db', { relaxedDurability: true });
             await this.db.waitReady;
+
+            const test = await this.db.query('SELECT 1 as test');
 
             await this.db.query(`
                 CREATE TABLE IF NOT EXISTS patients (
@@ -95,6 +99,23 @@ class PatientDbService {
             throw error;
         }
     }
+
+    // NEW METHOD: Execute raw SQL queries
+    async executeRawQuery(sqlQuery) {
+        if (!this.db) {
+            await this.initializeDb();
+            if (!this.db) {
+                 throw new Error('Database is still not initialized after retry.');
+            }
+        }
+        try {
+            const result = await this.db.query(sqlQuery);
+            return result; // Returns { rows, fields }
+        } catch (error) {
+            console.error('Raw SQL query failed:', error);
+            throw error;
+        }
+    }
 }
 
 const patientDbService = new PatientDbService();
@@ -158,12 +179,14 @@ function loadContent(route) {
         case 'query':
             contentHtml = `
                 <div class="query-container p-4 bg-bg-medium rounded-lg shadow-md max-w-4xl mx-auto">
-                    <h2 class="text-text-white text-2xl font-semibold mb-6 text-center">Patient Records</h2>
+                    <h2 class="text-text-white text-2xl font-semibold mb-6 text-center">Patient Records & Raw Query</h2>
+
+                    <h3 class="text-text-white text-xl font-semibold mb-4 mt-6">Registered Patients</h3>
                     <div class="mb-4">
                         <input type="text" id="searchInput" placeholder="Search patients..."
                             class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent">
                     </div>
-                    <div id="patientsTableContainer" class="overflow-x-auto">
+                    <div id="patientsTableContainer" class="overflow-x-auto mb-8">
                         <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
                             <thead class="bg-gray-700 text-gray-300 uppercase text-sm leading-normal">
                                 <tr>
@@ -181,12 +204,29 @@ function loadContent(route) {
                         </table>
                     </div>
                     <div id="noPatientsMessage" class="hidden text-center text-gray-400 text-lg py-8">No patients registered yet.</div>
+
+                    <h3 class="text-text-white text-xl font-semibold mb-4 mt-8">Execute Raw SQL</h3>
+                    <div class="mb-4">
+                        <textarea id="sqlQueryInput" rows="5" placeholder="Enter SQL query here (e.g., SELECT * FROM patients;)"
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent font-mono text-sm"></textarea>
+                    </div>
+                    <div class="flex justify-end mb-4">
+                        <button id="executeSqlQueryBtn"
+                            class="bg-accent-blue text-white py-2 px-6 rounded-full hover:bg-accent-dark-blue transition-all duration-300 ease-in-out font-bold text-base shadow-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-75">
+                            Execute Query
+                        </button>
+                    </div>
+                    <div id="sqlQueryResult" class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
+                        <pre class="text-gray-200 whitespace-pre-wrap" id="sqlQueryResultPre">Query results will appear here.</pre>
+                    </div>
+                    <div id="sqlQueryError" class="hidden text-red-400 text-sm mt-2"></div>
                 </div>
             `;
             document.querySelector('[data-route="query"]').classList.add('active');
             contentArea.innerHTML = contentHtml;
             renderPatientsList();
             setupSearch();
+            setupRawQueryExecutor(); // NEW: Setup raw query executor
             break;
         case 'about':
             contentHtml = `
@@ -280,6 +320,52 @@ function setupSearch() {
         });
     }
 }
+
+// NEW FUNCTION: Setup Raw Query Executor
+function setupRawQueryExecutor() {
+    const sqlQueryInput = document.getElementById('sqlQueryInput');
+    const executeSqlQueryBtn = document.getElementById('executeSqlQueryBtn');
+    const sqlQueryResultPre = document.getElementById('sqlQueryResultPre');
+    const sqlQueryErrorDiv = document.getElementById('sqlQueryError');
+
+    if (!sqlQueryInput || !executeSqlQueryBtn || !sqlQueryResultPre || !sqlQueryErrorDiv) {
+        console.error('Could not find required DOM elements for raw SQL query executor.');
+        return;
+    }
+
+    executeSqlQueryBtn.addEventListener('click', async () => {
+        const sqlQuery = sqlQueryInput.value.trim();
+        sqlQueryResultPre.textContent = 'Executing query...';
+        sqlQueryErrorDiv.classList.add('hidden'); // Hide previous errors
+
+        if (!sqlQuery) {
+            sqlQueryResultPre.textContent = 'Please enter a SQL query.';
+            return;
+        }
+
+        try {
+            const result = await patientDbService.executeRawQuery(sqlQuery);
+
+            let output = '';
+            if (result.rows && result.rows.length > 0) {
+                // If it's a SELECT query, display as JSON for now
+                output = JSON.stringify(result.rows, null, 2);
+            } else if (result.command) {
+                // For DDL/DML commands like CREATE, INSERT, UPDATE, DELETE
+                output = `Command: ${result.command}\nRows affected: ${result.rowCount || 0}`;
+            } else {
+                output = 'Query executed successfully with no rows returned.';
+            }
+            sqlQueryResultPre.textContent = output;
+        } catch (error) {
+            sqlQueryResultPre.textContent = `Error: ${error.message}`;
+            sqlQueryErrorDiv.textContent = `SQL Error: ${error.message}`;
+            sqlQueryErrorDiv.classList.remove('hidden');
+            console.error('Raw SQL Query Execution Error:', error);
+        }
+    });
+}
+
 
 function generateUniqueId() {
     return 'patient_' + Date.now().toString(36) + Math.random().toString(36).substring(2);
